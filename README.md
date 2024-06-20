@@ -47,7 +47,7 @@ Here are the CLI commands to install all necessary packages and set up your Gami
 
 ### Solitaire Game
 
-** To get Solitaire Repo **
+1. **To get Solitaire Repo**
 ```sh
 git clone https://github.com/alex8ty6/solitaire-game
 ```
