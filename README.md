@@ -45,6 +45,13 @@ Gaming-Dapp/
 
 Here are the CLI commands to install all necessary packages and set up your Gaming-Dapp project for the Solitaire game:
 
+### Solitaire Game
+
+** To get Solitaire Repo **
+```sh
+git clone https://github.com/alex8ty6/solitaire-game
+```
+
 ### Backend
 1. **Navigate to the backend directory:**
    ```sh
