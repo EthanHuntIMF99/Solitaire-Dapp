@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import OAuth2 from 'discord-oauth2';
 
-const oauth = new OAuth2({
-  clientId: 'YOUR_DISCORD_CLIENT_ID',
-  clientSecret: 'YOUR_DISCORD_CLIENT_SECRET',
-  redirectUri: 'YOUR_REDIRECT_URI'
-});
+
 
 const LoginPage = () => {
   const [discordUser, setDiscordUser] = useState(null);
@@ -30,12 +25,8 @@ const LoginPage = () => {
   }, []);
 
   const handleDiscordLogin = () => {
-    const authUrl = oauth.generateAuthUrl({
-      scope: ['identify'],
-    });
-    window.location.href = authUrl;
+    window.location.href = 'http://localhost:3001/auth/discord';
   };
-
   const handleWalletConnect = (account) => {
     setWalletAddress(account);
     // Save user and wallet address to your backend
