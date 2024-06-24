@@ -4,25 +4,8 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 
 const LoginPage = () => {
-  const [discordUser, setDiscordUser] = useState(null);
-  const [walletAddress, setWalletAddress] = useState(null);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code) {
-      oauth.tokenRequest({
-        code,
-        scope: 'identify',
-        grantType: 'authorization_code',
-      }).then((token) => {
-        oauth.getUser(token.access_token).then((user) => {
-          setDiscordUser(user);
-          // Save user and wallet address to your backend
-        });
-      });
-    }
-  }, []);
+  const [walletAddress, setWalletAddress] = useState(null);
 
   const handleDiscordLogin = () => {
     window.location.href = 'http://localhost:3001/auth/discord';
