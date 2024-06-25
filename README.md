@@ -107,7 +107,7 @@ git clone https://github.com/alex8ty6/solitaire-game
 2. **Deploy Smart Contracts:**
    ```sh
    cd ../contracts
-   npx hardhat run deploy.js --network testnet
+   npx hardhat ignition deploy ignition/modules/GameScores.js --network localhost
    ```
 
 3. **Start the Frontend Development Server:**
