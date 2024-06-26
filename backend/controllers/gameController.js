@@ -1,10 +1,10 @@
 const GameScore = require('../models/gameScore');
 
 exports.saveScore = async (req, res) => {
-  const { userId, score, startTime, endTime } = req.body;
+  const { userId, score, startTime, endTime, timeTaken, movesDone } = req.body;
 
   try {
-    const gameScore = new GameScore({ userId, score, startTime, endTime });
+    const gameScore = new GameScore({ userId, score, startTime, endTime, timeTaken, movesDone });
     await gameScore.save();
 
     res.send('Score saved');
