@@ -62,3 +62,20 @@ exports.connectWallet = async (req, res) => {
     res.status(500).send('Failed to connect wallet');
   }
 };
+
+exports.register = async (req, res) => {
+  const { discordId, email, walletAddress } = req.body;
+
+  try {
+    let user = await User.findOne({ discordId });
+    if (!user) {
+      user = new User({ discordId, email, walletAddress });
+    } else {
+      user.walletAddress = walletAddress;
+    }
+    await user.save();
+    res.status(200).send('User registered successfully');
+  } catch (error) {
+    res.status(500).send('Registration failed');
+  }
+};
