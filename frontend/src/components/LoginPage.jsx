@@ -1,13 +1,7 @@
-// src/components/LoginPage.jsx
 import React, { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import OAuth2 from 'discord-oauth2';
 
-const oauth = new OAuth2({
-  clientId: 'YOUR_DISCORD_CLIENT_ID',
-  clientSecret: 'YOUR_DISCORD_CLIENT_SECRET',
-  redirectUri: 'YOUR_REDIRECT_URI'
-});
+
 
 const LoginPage = () => {
   const [discordUser, setDiscordUser] = useState(null);
@@ -16,30 +10,57 @@ const LoginPage = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-    if (code) {
-      oauth.tokenRequest({
-        code,
-        scope: 'identify',
-        grantType: 'authorization_code',
-      }).then((token) => {
-        oauth.getUser(token.access_token).then((user) => {
-          setDiscordUser(user);
-          // Save user and wallet address to your backend
-        });
-      });
-    }
-  }, []);
+  //   if (code) {
+  //     oauth.tokenRequest({
+  //       code,
+  //       scope: 'identify',
+  //       grantType: 'authorization_code',
+  //     }).then((token) => {
+  //       oauth.getUser(token.access_token).then((user) => {
+  //         setDiscordUser(user);
+  //         // Save user and wallet address to your backend
+  //       });
+  //     });
+  //   }
+  // }, []);
+        if (code) {
+          fetch(`http://localhost:3001/auth/discord/callback?code=${code}`)
+            .then(response => response.json())
+            .then(user => {
+              setDiscordUser(user);
+              // Save user to backend
+              saveUserToBackend(user, walletAddress);
+            });
+        }
+      }, [walletAddress]);
 
   const handleDiscordLogin = () => {
-    const authUrl = oauth.generateAuthUrl({
-      scope: ['identify'],
-    });
-    window.location.href = authUrl;
+    window.location.href = 'http://localhost:3001/auth/discord';
   };
 
+  // const handleWalletConnect = (account) => {
+  //   setWalletAddress(account);
+  //   // Save user and wallet address to your backend
+  //   fetch('http://localhost:3001/register', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       discordId: discordUser.id,
+  //       walletAddress: account,
+  //     }),
+  //   });
+  // };
   const handleWalletConnect = (account) => {
-    setWalletAddress(account);
-    // Save user and wallet address to your backend
+    setWalletAddress(account.walletAddress);
+    // Save user and wallet address to backend if discordUser is already set
+    if (discordUser) {
+      saveUserToBackend(discordUser, account.walletAddress);
+    }
+  };
+
+  const saveUserToBackend = (discordUser, walletAddress) => {
     fetch('http://localhost:3001/register', {
       method: 'POST',
       headers: {
@@ -47,9 +68,13 @@ const LoginPage = () => {
       },
       body: JSON.stringify({
         discordId: discordUser.id,
-        walletAddress: account,
+        username: discordUser.username,
+        walletAddress: walletAddress,
       }),
-    });
+    })
+      .then(response => response.json())
+      .then(data => console.log('User saved:', data))
+      .catch(error => console.error('Error saving user:', error));
   };
 
   return (
@@ -60,7 +85,7 @@ const LoginPage = () => {
       ) : (
         <div>
           <p>Logged in as {discordUser.username}</p>
-          <ConnectButton onConnect={({ account }) => handleWalletConnect(account.address)} />
+          <ConnectButton onConnect={({ account }) => handleWalletConnect(account.walletAddress)} />
         </div>
       )}
     </div>
